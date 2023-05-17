@@ -362,11 +362,6 @@ app.get('/logout', isLoggedIn, catchAsync(async (req, res) => {
     res.redirect('/users/login');
 }))
 
-//socket.on is definition of the function 'example'
-//while socket.emit is kind of calling the socket.on function
-
-
-
 
 const roomsSchema = {
     room_name: String,
@@ -375,19 +370,13 @@ const roomsSchema = {
 }
 const Room = new mongoose.model("Room", roomsSchema);
 
-// we are using http to help express work with socket io
-
-//run when client connects
-//io will listen for a event/connection
 io.on("connection", function (socket) {
     socket.on('joinRoom', function ({ username, room }) {
         const user = userJoin(socket.id, username, room);
         socket.join(user.room);
-        //it is only sent to the guy joining
         console.log("hello");
         Room.find({}, function (err, result) {
             var x = -1;
-            // console.log("I am looking for room:"+user.room);
             for (var i = 0; i < result.length; i++) {
                 if (result[i].room_name == user.room) {
                     x = i;
@@ -440,10 +429,6 @@ io.on("connection", function (socket) {
         });
     });
 
-    //jesse hi client side se kuch bhi chat waale form se content
-    //server pe aata hai toh hum usse baaki members ko bhi dikhana
-    //chahenge, so ab hum server se firse client ko content bhej denge
-    //listen for chatMessage
     socket.on("chatMessage", function (msg) {
         const user = getCurrentUser(socket.id);
         const msg1 = formatMessage(user.username, msg);
